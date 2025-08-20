@@ -1,0 +1,1 @@
+# Secret Scanner Report\n**Generated:** 2025-08-19 20:26:03\n**Scan Summary:** 5 files in 2 folders scanned in 0.0s\n**Filter Applied:** Secret type contains 'ssh'\n**Total Secrets Found:** 0\n\n## Clean Scan\nNo potential secrets detected in the scanned files.

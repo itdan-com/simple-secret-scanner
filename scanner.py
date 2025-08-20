@@ -76,8 +76,8 @@ class SecretScanner:
             'Google API Key': r'AIza[0-9A-Za-z_-]{35}',
             'Slack Token': r'xox[baprs]-[A-Za-z0-9-]+',
             'Mailgun API Key': r'key-[A-Za-z0-9]{32}',
-            'SendGrid API Key': r'SG\\.[A-Za-z0-9_-]{22}\\.[A-Za-z0-9_-]{43}',
-            'JWT Token': r'eyJ[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+',
+            'SendGrid API Key': r'SG\.[A-Za-z0-9_-]{22}\.[A-Za-z0-9_-]{43}',
+            'JWT Token': r'eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+',
             'SSH Private Key': r'-----BEGIN [A-Z ]*PRIVATE KEY-----',
             # AI Provider API Keys (Major Addition!)
             'OpenAI API Key': r'sk-[A-Za-z0-9]{20}T3BlbkFJ[A-Za-z0-9]{20}',
@@ -88,8 +88,8 @@ class SecretScanner:
             'Hugging Face Token': r'hf_[A-Za-z0-9]{34}',
             'Replicate API Token': r'r8_[A-Za-z0-9]{32}',
             # Much more restrictive patterns for common false positives
-            'Hardcoded Password': r'[\"\\''][a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]{}|;:,.<>?]{12,}[\"\\'']',  # Only long, complex passwords
-            'Database URL with Credentials': r'[a-zA-Z]+://[^\\s:@]+:[^\\s:@]{8,}@[^\\s@]+',  # Must have 8+ char password
+            'Hardcoded Password': r'["\'][a-zA-Z0-9!@#$%^&*()_+=\[\]{}|;:,.<>?-]{12,}["\']',  # Only long, complex passwords
+            'Database URL with Credentials': r'[a-zA-Z]+://[^\s:@]+:[^\s:@]{8,}@[^\s@]+',  # Must have 8+ char password
         }
         
         self.file_extensions = {
@@ -104,7 +104,7 @@ class SecretScanner:
         self.ignore_patterns = {
             r'#.*',  # Comments
             r'//.*',  # Comments
-            r'/\\*.*?\\*/',  # Block comments
+            r'/\*.*?\*/',  # Block comments
             r'<!--.*?-->',  # HTML comments
         }
 
@@ -154,9 +154,9 @@ class SecretScanner:
 
     def extract_strings_from_line(self, line: str) -> List[str]:
         string_patterns = [
-            r'"([^"\\\\]|\\\\.)*"',  # Double quoted strings
-            r"'([^'\\\\]|\\\\.)*'",  # Single quoted strings
-            r'`([^`\\\\]|\\\\.)*`',  # Backtick strings
+            r'"([^"\\]|\\.)*"',  # Double quoted strings
+            r"'([^'\\]|\\.)*'",  # Single quoted strings
+            r'`([^`\\]|\\.)*`',  # Backtick strings
         ]
         
         strings = []
