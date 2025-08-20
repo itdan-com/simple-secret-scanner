@@ -44,22 +44,22 @@ class ProgressBar:
         
         # Create animated progress bar
         elapsed = current_time - self.start_time
-        animation_chars = "98<4&'"
+        animation_chars = "â ‹â ™â ¹â ¸â ¼â ´â ¦â §â ‡â "
         spinner = animation_chars[int(elapsed * 10) % len(animation_chars)]
         
         # Progress bar with file count
         progress_text = f"{spinner} Scanning... Files: {self.files_scanned:,} | Folders: {self.folders_scanned:,}"
         if self.secrets_found > 0:
-            progress_text += f" | Secrets: {self.secrets_found:,}  "
+            progress_text += f" | Secrets: {self.secrets_found:,} âš ï¸"
         
         # Clear line and print progress
-        print(f"\\r{progress_text}", end="", flush=True)
+        print(f"\r{progress_text}", end="", flush=True)
     
     def finish(self, total_matches: int):
         elapsed = time.time() - self.start_time
-        print(f"\\r Scan complete! Files: {self.files_scanned:,} | Folders: {self.folders_scanned:,} | Time: {elapsed:.1f}s")
+        print(f"\râœ… Scan complete! Files: {self.files_scanned:,} | Folders: {self.folders_scanned:,} | Time: {elapsed:.1f}s")
         if total_matches > 0:
-            print(f"=¨ Found {total_matches:,} potential secret(s)")
+            print(f"ðŸš¨ Found {total_matches:,} potential secret(s)")
         print()
 
 
@@ -500,7 +500,7 @@ def generate_secrets_report(matches: List[SecretMatch], total_files: int, total_
     report.append("")
     
     if not matches:
-        report.append("##  Clean Scan")
+        report.append("## Clean Scan")
         report.append("No potential secrets detected in the scanned files.")
         return "\\n".join(report)
     
@@ -520,7 +520,7 @@ def generate_secrets_report(matches: List[SecretMatch], total_files: int, total_
     high_confidence = sum(1 for m in matches if m.confidence == "High")
     medium_confidence = sum(1 for m in matches if m.confidence == "Medium")
     
-    report.append("## =Ê Summary")
+    report.append("## Summary")
     report.append(f"- **High Confidence:** {high_confidence:,} secrets")
     report.append(f"- **Medium Confidence:** {medium_confidence:,} secrets")
     report.append(f"- **Files Affected:** {len(set(m.file_path for m in matches)):,}")
@@ -532,32 +532,32 @@ def generate_secrets_report(matches: List[SecretMatch], total_files: int, total_
     for match in matches:
         secret_types[match.secret_type] = secret_types.get(match.secret_type, 0) + 1
     
-    report.append("## = Secret Types Found")
+    report.append("## Secret Types Found")
     for secret_type, count in sorted(secret_types.items(), key=lambda x: x[1], reverse=True):
         report.append(f"- **{secret_type}:** {count:,}")
     report.append("")
     
     # Detailed findings by folder
-    report.append("## =Á Detailed Findings")
+    report.append("## Detailed Findings")
     
     for folder_path in sorted(folder_groups.keys()):
-        report.append(f"### =Â `{folder_path}`")
+        report.append(f"### `{folder_path}`")
         report.append("")
         
         for filename in sorted(folder_groups[folder_path].keys()):
             file_matches = folder_groups[folder_path][filename]
-            report.append(f"#### =Ä `{filename}` ({len(file_matches)} secrets)")
+            report.append(f"#### `{filename}` ({len(file_matches)} secrets)")
             report.append("")
             
             for match in sorted(file_matches, key=lambda x: x.line_number):
-                confidence_emoji = "=4" if match.confidence == "High" else "=á"
-                report.append(f"- {confidence_emoji} **Line {match.line_number}:** {match.secret_type}")
+                confidence_emoji = "HIGH" if match.confidence == "High" else "MED"
+                report.append(f"- **Line {match.line_number}:** {match.secret_type} ({confidence_emoji})")
                 report.append(f"  - **Match:** `{match.matched_text[:50]}{'...' if len(match.matched_text) > 50 else ''}`")
                 report.append(f"  - **Context:** `{match.line_content[:80]}{'...' if len(match.line_content) > 80 else ''}`")
                 report.append("")
         report.append("")
     
-    report.append("##   Next Steps")
+    report.append("## Next Steps")
     report.append("1. **Review HIGH confidence findings first** - these are most likely real secrets")
     report.append("2. **Remove or replace secrets** with environment variables or secret management")
     report.append("3. **Rotate any exposed secrets** immediately")
@@ -642,8 +642,8 @@ Examples:
     # Show filter results if filters were applied
     if args.filter or args.confidence != 'all':
         if not args.quiet:
-            print(f"= Filter applied: {filter_description}")
-            print(f"=Ê Results: {len(filtered_matches):,} of {original_count:,} matches")
+            print(f"Filter applied: {filter_description}")
+            print(f"Results: {len(filtered_matches):,} of {original_count:,} matches")
             print()
     
     # Generate report if requested
@@ -652,7 +652,7 @@ Examples:
         report_content = generate_secrets_report(filtered_matches, total_files, total_folders, scan_time, filter_description)
         with open('secrets.md', 'w') as f:
             f.write(report_content)
-        print(f"=Ä Report saved to secrets.md ({len(filtered_matches):,} secrets found)")
+        print(f"Report saved to secrets.md ({len(filtered_matches):,} secrets found)")
     
     if args.quiet:
         sys.exit(0 if not filtered_matches else 1)
